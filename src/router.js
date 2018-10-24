@@ -10,17 +10,17 @@ export default new Router({
       path: '/',
       component: Home,
       children:[
-        {
-          path:'/',
-          name:'member',
-          meta: { breadcrumb:['会员管理'] },
-          component:()=>import('./views/member.vue')//会员管理
-        },{
-          path:'/goods/list',
-          name:'goods-list',
-          meta: { breadcrumb:['商品','商品列表'] },
-          component:()=>import('./views/goods/goodsList.vue')//商品列表
-        }
+        // {
+        //   path:'/',
+        //   name:'member',
+        //   meta: { breadcrumb:['会员管理'] },
+        //   component:()=>import('./views/member.vue')//会员管理
+        // },{
+        //   path:'/goods/list',
+        //   name:'goods-list',
+        //   meta: { breadcrumb:['商品','商品列表'] },
+        //   component:()=>import('./views/goods/goodsList.vue')//商品列表
+        // }
       ]
     },
     {

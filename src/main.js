@@ -13,7 +13,7 @@ Vue.prototype.$http = axios
  * axios全局配置
  */
 axios.defaults.timeout = 100000;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 axios.defaults.baseURL = APIpath;
 axios.defaults.withCredentials = true;
 
@@ -25,7 +25,7 @@ axios.interceptors.request.use((res) => {
   if (userInfo) {
     res.headers['token'] = userInfo.token
   }
-  res.data = qs.stringify(res.data);
+  // res.data = qs.stringify(res.data);
   return res
 });
 

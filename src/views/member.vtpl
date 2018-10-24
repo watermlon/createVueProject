@@ -1,7 +1,7 @@
 <template>
 <div>
     <Card>
-        <table-view :tableTitle='tableTitle'></table-view>
+        <table-view :tableTitle='tableTitle' :postUrl='postUrl'></table-view>
     </Card>
 </div>
 </template>
@@ -15,7 +15,8 @@ export default {
     return {
         tableTitle:[
             //@tableTitle@
-        ]
+        ],
+        postUrl://@postUrl@
     };
   },
   methods:{

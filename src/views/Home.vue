@@ -1,7 +1,8 @@
 <template>
 <div>
-  <Input v-model="filename"></Input>
-  <Table ref="dragable" border :columns="columns1" :data="data1"></Table>
+  <Input v-model="postUrl" placeholder="请求路径"></Input>
+  <Input v-model="filename" placeholder="文件名字"></Input>
+  <Table ref="dragable" border :columns="columns1" :data="data1" @on-selection-change='checkboxSelect'></Table>
   <Button @click="showTable">查看</Button>
   <Button @click="createFile">生成</Button>
   <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload='uploadBefore' :show-upload-list='false'>
@@ -20,13 +21,14 @@ import sortable from "sortablejs";
 export default {
   data() {
     return {
-      fileList:[],
-      nowPath:[],
-      filename:'',
+      fileList: [],
+      nowPath: [],
+      selectList: [],
+      filename: "",
       columns1: [
         {
-          type: 'selection',
-          width:80
+          type: "selection",
+          width: 80
         },
         {
           title: "key",
@@ -51,6 +53,26 @@ export default {
               }
             });
           }
+        },
+        {
+          title: "render",
+          key: "render",
+          render: (h, parmas) => {
+            return h("div", [
+              h(
+                "Checkbox",
+                {
+                  on: {
+                    "on-change": val => {
+                      parmas.row.render = val;
+                      this.data1[parmas.index] = parmas.row;
+                    }
+                  }
+                },
+                "删除按钮"
+              )
+            ]);
+          }
         }
       ],
       data1: []
@@ -67,18 +89,21 @@ export default {
         for (let k in jsonObj) {
           that.data1.push({
             title: "",
-            key: k
+            key: k,
+            render: ""
           });
         }
       };
-      this.initDrop()
+      this.initDrop();
       return false;
     },
     showTable() {
       console.log(this.data1);
-      this.$http.post('/readFile',{path:this.nowPath.join('/')}).then(res=>{
-        this.fileList = res
-      })
+      this.$http
+        .post("/readFile", { path: this.nowPath.join("/") })
+        .then(res => {
+          this.fileList = res;
+        });
     },
     initDrop() {
       let el = this.$refs["dragable"].$children[1].$el.children[1];
@@ -103,23 +128,27 @@ export default {
     chooseFunc(e) {
       // console.log('chooseFunc',e);
     },
-    showFileList(name){
-      let str = name.replace(/\s*/g,"");
-      this.nowPath.push(str)
-      this.showTable()
+    showFileList(name) {
+      let str = name.replace(/\s*/g, "");
+      this.nowPath.push(str);
+      this.showTable();
     },
-    backDir(){
-      this.nowPath.pop()
-      this.showTable()
+    backDir() {
+      this.nowPath.pop();
+      this.showTable();
     },
-    createFile(){
-      this.$http.post('/',{
-        filePath:this.nowPath.join('/'),
-        fileName:this.filename,
-        json:JSON.stringify(this.data1)
-      }).then(res=>{
-
-      })
+    createFile() {
+      this.$http
+        .post("/", {
+          filePath: this.nowPath.join("/"),
+          fileName: this.filename,
+          json: this.selectList
+        })
+        .then(res => {});
+    },
+    checkboxSelect(val) {
+      console.log(val);
+      this.selectList = val;
     }
   }
 };
