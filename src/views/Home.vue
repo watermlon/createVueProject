@@ -1,5 +1,16 @@
 <template>
 <div>
+  <div style="padding:10px;">
+     <Row v-for="item in searchList">
+          <Col span="12">
+              <Input placeholder="名字" v-model="item.text"></Input>
+          </Col>
+          <Col span="12">
+              <Input placeholder="value" v-model="item.value"></Input>
+          </Col>
+      </Row>
+  </div>
+  <Button @click="add">新增</Button>
   <Input v-model="postUrl" placeholder="请求路径"></Input>
   <Input v-model="filename" placeholder="文件名字"></Input>
   <Table ref="dragable" border :columns="columns1" :data="data1" @on-selection-change='checkboxSelect'></Table>
@@ -25,6 +36,12 @@ export default {
       nowPath: [],
       selectList: [],
       filename: "",
+      searchList: [
+        {
+          text: "",
+          key: ""
+        }
+      ],
       columns1: [
         {
           type: "selection",
@@ -65,7 +82,11 @@ export default {
                   on: {
                     "on-change": val => {
                       parmas.row.render = val;
-                      this.data1[parmas.index] = parmas.row;
+                      this.data1[parmas.index] = {
+                        title: parmas.row.title,
+                        key: parmas.row.key,
+                        render: parmas.row.render
+                      };
                     }
                   }
                 },
@@ -142,6 +163,7 @@ export default {
         .post("/", {
           filePath: this.nowPath.join("/"),
           fileName: this.filename,
+          postUrl: this.postUrl,
           json: this.selectList
         })
         .then(res => {});
@@ -149,6 +171,13 @@ export default {
     checkboxSelect(val) {
       console.log(val);
       this.selectList = val;
+      console.log(this.data1);
+    },
+    add() {
+      this.searchList.push({
+        text: "",
+        key: ""
+      });
     }
   }
 };
