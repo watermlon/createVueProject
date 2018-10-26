@@ -6,24 +6,27 @@
               <Input placeholder="名字" v-model="item.text"></Input>
           </Col>
           <Col span="12">
-              <Input placeholder="value" v-model="item.value"></Input>
+              <Input placeholder="value" v-model="item.key"></Input>
           </Col>
       </Row>
   </div>
-  <Button @click="add">新增</Button>
+  <Button @click="add">新增一行</Button>
   <Input v-model="postUrl" placeholder="请求路径"></Input>
   <Input v-model="filename" placeholder="文件名字"></Input>
   <Table ref="dragable" border :columns="columns1" :data="data1" @on-selection-change='checkboxSelect'></Table>
-  <Button @click="showTable">查看</Button>
-  <Button @click="createFile">生成</Button>
-  <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload='uploadBefore' :show-upload-list='false'>
-        <Button icon="ios-cloud-upload-outline">Upload files</Button>
+  <Button @click="showTable">查看目录</Button>
+  <Button @click="createFile">生成文件</Button>
+  <Upload action="//jsonplaceholder.typicode.com/posts/" :before-upload='uploadBefore' :show-upload-list='false' accept='.json'>
+        <Button icon="ios-cloud-upload-outline">上传JSON文件</Button>
   </Upload>
   <div>
     <a href="javascript:;" @click="backDir"><Icon type="md-arrow-back" />返回上一层</a>
   </div>
   <div>
       <a style="padding:10px;display:inline-block;" href="javascript:;" v-for="item in fileList" @click="showFileList(item)">{{item}}</a>
+  </div>
+  <div>
+    <p v-for="item in logList">{{item}}</p>
   </div>
 </div>
 </template>
@@ -35,6 +38,7 @@ export default {
       fileList: [],
       nowPath: [],
       selectList: [],
+      logList:[],
       filename: "",
       searchList: [
         {
@@ -164,9 +168,12 @@ export default {
           filePath: this.nowPath.join("/"),
           fileName: this.filename,
           postUrl: this.postUrl,
-          json: this.selectList
+          json: this.selectList,
+          searchList:this.searchList
         })
-        .then(res => {});
+        .then(res => {
+          this.logList.push(res)
+        });
     },
     checkboxSelect(val) {
       console.log(val);
